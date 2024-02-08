@@ -139,8 +139,6 @@ axs.grid(True)
 axs.set_xlabel('Distance [km]')
 axs.legend()
 
-#plt.show()
-
 for i, txt in enumerate(channel1):
     axs.annotate(txt, (distance1[i], hhe[i]),color='tab:green',size=7)
 
@@ -163,3 +161,5 @@ if save_fig:
         os.remove(figname_svg)
 
     plt.savefig(figname_svg)
+
+#plt.show()
