@@ -55,122 +55,117 @@ for file in os.listdir(datadir):
     #select event
     name = os.fsdecode(file)
 
+    if name.startswith("flegrei"): 
 
-#####################################
+        ev_dir=os.path.join(datadir,name)
+        ev_name=os.path.join(ev_dir,name + '.mseed')
 
-#select event
-##############################################################################
-#name='flegrei_2022_12_28_02_35_57'     ########################################CHANGE
-##############################################################################
+        for ev in events:
+            if ev.name==name:
+                print('Selected event:',name)
+                #print('lat:',ev.lat,' lon:',ev.lon)
+                event=ev
 
-    ev_dir=os.path.join(datadir,name)
-    ev_name=os.path.join(ev_dir,name + '.mseed')
+        #select wavelet (obspy)  
+        w=read(ev_name)
+        #print('number of traces in event:',len(w))
 
-    for ev in events:
-        if ev.name==name:
-            print('Selected event:',name)
-            #print('lat:',ev.lat,' lon:',ev.lon)
-            event=ev
+        st_coord=[]
+        for trace in w:
+            for s in st:
+                if trace.stats.station==s.station:
+                    st_coord.append( [trace.stats.station, trace.stats.channel , s.lat,s.lon,max(trace.data) ] )
+            
+        #print('number of traces:',len(st_coord))
 
-    #select wavelet (obspy)  
-    w=read(ev_name)
-    #print('number of traces in event:',len(w))
+        #calculate distance
+        coords_event = (event.lat, event.lon)
 
-    st_coord=[]
-    for trace in w:
-        for s in st:
-            if trace.stats.station==s.station:
-                st_coord.append( [trace.stats.station, trace.stats.channel , s.lat,s.lon,max(trace.data) ] )
-        
-    #print('number of traces:',len(st_coord))
+        dist_vs_amp=[]
 
-    #calculate distance
-    coords_event = (event.lat, event.lon)
+        for row in st_coord:
+            coords_station = (row[2], row[3])
+            dist= geopy.distance.distance(coords_event, coords_station).km
 
-    dist_vs_amp=[]
+            dist_vs_amp.append( [row[0], row[1],dist,row[4]] )
+        dist_vs_amp[0]
 
-    for row in st_coord:
-        coords_station = (row[2], row[3])
-        dist= geopy.distance.distance(coords_event, coords_station).km
+        # separate 3 channels
+        channel1=[]
+        channel2=[]
+        channel3=[]
+        distance1=[]
+        distance2=[]
+        distance3=[]
+        hhe=[]
+        hhn=[]
+        hhz=[]
 
-        dist_vs_amp.append( [row[0], row[1],dist,row[4]] )
-    dist_vs_amp[0]
+        for row in dist_vs_amp:
+            channel=row[1]
+            if channel=='HHE':
+                hhe.append(row[3])
+                distance1.append(row[2])
+                channel1.append(row[0])
+            elif channel=='HHN':
+                hhn.append(row[3])
+                distance2.append(row[2])
+                channel2.append(row[0])
+            elif channel=='HHZ':
+                hhz.append(row[3])
+                distance3.append(row[2])
+                channel3.append(row[0])
 
-    # separate 3 channels
-    channel1=[]
-    channel2=[]
-    channel3=[]
-    distance1=[]
-    distance2=[]
-    distance3=[]
-    hhe=[]
-    hhn=[]
-    hhz=[]
+        #print(len(distance1),len(hhe),len(channel1))
+        #print(len(distance2),len(hhn),len(channel2))
+        #print(len(distance3),len(hhz),len(channel3))
 
-    for row in dist_vs_amp:
-        channel=row[1]
-        if channel=='HHE':
-            hhe.append(row[3])
-            distance1.append(row[2])
-            channel1.append(row[0])
-        elif channel=='HHN':
-            hhn.append(row[3])
-            distance2.append(row[2])
-            channel2.append(row[0])
-        elif channel=='HHZ':
-            hhz.append(row[3])
-            distance3.append(row[2])
-            channel3.append(row[0])
+        #SAVE FIGURE SWITCH
+        save_fig=True
 
-    #print(len(distance1),len(hhe),len(channel1))
-    #print(len(distance2),len(hhn),len(channel2))
-    #print(len(distance3),len(hhz),len(channel3))
+        # Creazione della figura e dei subplot
+        fig, axs = plt.subplots(1, 1, figsize=(17, 11), sharex=False)
 
-    #SAVE FIGURE SWITCH
-    save_fig=True
+        # Plot per il primo subplot
+        axs.scatter(num.array(distance1),
+                        num.array(hhe),
+                        label='HHE', s=20, color='green')
+        axs.scatter(num.array(distance2),
+                        num.array(hhn),
+                        label='HHN', s=20, color='orange')
+        axs.scatter(num.array(distance3),
+                        num.array(hhz),
+                        label='HHZ', s=20, color='blue')
+        axs.set_xscale("log")
+        axs.set_yscale("log")
+        axs.set_ylabel('Amplitude')
+        axs.grid(True)
+        axs.set_xlabel('Distance [km]')
+        axs.legend()
 
-    # Creazione della figura e dei subplot
-    fig, axs = plt.subplots(1, 1, figsize=(17, 11), sharex=False)
+        for i, txt in enumerate(channel1):
+            axs.annotate(txt, (distance1[i], hhe[i]),color='tab:green',size=7)
 
-    # Plot per il primo subplot
-    axs.scatter(num.array(distance1),
-                    num.array(hhe),
-                    label='HHE', s=20, color='green')
-    axs.scatter(num.array(distance2),
-                    num.array(hhn),
-                    label='HHN', s=20, color='orange')
-    axs.scatter(num.array(distance3),
-                    num.array(hhz),
-                    label='HHZ', s=20, color='blue')
-    axs.set_xscale("log")
-    axs.set_yscale("log")
-    axs.set_ylabel('Amplitude')
-    axs.grid(True)
-    axs.set_xlabel('Distance [km]')
-    axs.legend()
+        for i, txt in enumerate(channel2):
+            axs.annotate(txt, (distance2[i], hhn[i]),color='tab:orange',size=7)
 
-    for i, txt in enumerate(channel1):
-        axs.annotate(txt, (distance1[i], hhe[i]),color='tab:green',size=7)
+        for i, txt in enumerate(channel3):
+            axs.annotate(txt, (distance3[i], hhz[i]),color='tab:blue',size=7)
 
-    for i, txt in enumerate(channel2):
-        axs.annotate(txt, (distance2[i], hhn[i]),color='tab:orange',size=7)
+        if save_fig:
 
-    for i, txt in enumerate(channel3):
-        axs.annotate(txt, (distance3[i], hhz[i]),color='tab:blue',size=7)
+            figname = os.path.join(plotdir, name + '_amplitude_vs_distance.pdf')
+            if os.path.isfile(figname):
+                os.remove(figname)
 
-    if save_fig:
+            plt.savefig(figname)
 
-        figname = os.path.join(plotdir, name + '_amplitude_vs_distance.pdf')
-        if os.path.isfile(figname):
-            os.remove(figname)
+            figname_svg = os.path.join(plotdir, name + '_amplitude_vs_distance.svg')
+            if os.path.isfile(figname_svg):
+                os.remove(figname_svg)
 
-        plt.savefig(figname)
+            plt.savefig(figname_svg)
+            print('Figure',figname.split('/')[-1],'saved!')
 
-        figname_svg = os.path.join(plotdir, name + '_amplitude_vs_distance.svg')
-        if os.path.isfile(figname_svg):
-            os.remove(figname_svg)
-
-        plt.savefig(figname_svg)
-        print('Figure',figname.split('/')[-1],'saved!')
-
-    #plt.show()
+        #plt.show()
+        plt.close()
