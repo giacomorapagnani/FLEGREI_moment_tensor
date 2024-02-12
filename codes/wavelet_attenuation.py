@@ -127,6 +127,7 @@ for file in os.listdir(datadir):
         fig, axs = plt.subplots(1, 1, figsize=(17, 11), sharex=False)
 
         # Plot per il primo subplot
+        plt.title(name)
         axs.scatter(num.array(distance1),
                         num.array(hhe),
                         label='HHE', s=20, color='green')
