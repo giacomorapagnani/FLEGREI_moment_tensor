@@ -34,7 +34,7 @@ plotdir =  os.path.join(plotdir,'AMP_DIST')
 
 catdir =  os.path.join(workdir,'CAT')
 meta_datadir=os.path.join(workdir,'META_DATA')
-datadir=os.path.join(workdir,'DATA_response')
+datadir=os.path.join(workdir,'DATA_big_eq')                                         #CHANGE
 
 #select stations (pyrocko)
 station_name = os.path.join(meta_datadir, 'stations_flegrei_INGV.pf')
@@ -43,7 +43,7 @@ st = model.load_stations(station_name)
 #print('Number of stations', len(st))
 
 #select catalogue (pyrocko)
-catname = os.path.join(catdir, 'catologue_flegrei_new_mag2_5.pf')
+catname = os.path.join(catdir, 'cat_eq_turkey.pf')                                  #CHANGE
 
 events = model.load_events(catname)
 #print('Number of events:', len(events))
@@ -55,7 +55,7 @@ for file in os.listdir(datadir):
     #select event
     name = os.fsdecode(file)
 
-    if name.startswith("flegrei"): 
+    if name.startswith(events[0].name.split('_')[0]): 
 
         ev_dir=os.path.join(datadir,name)
         ev_name=os.path.join(ev_dir,name + '.mseed')
@@ -168,5 +168,5 @@ for file in os.listdir(datadir):
             plt.savefig(figname_svg)
             print('Figure',figname.split('/')[-1],'saved!')
 
-        #plt.show()
+#        plt.show()
         plt.close()
