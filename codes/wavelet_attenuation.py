@@ -43,7 +43,7 @@ st = model.load_stations(station_name)
 #print('Number of stations', len(st))
 
 #select catalogue (pyrocko)
-catname = os.path.join(catdir, 'cat_eq_turkey.pf')                                  #CHANGE
+catname = os.path.join(catdir, 'cat_eq_indonesia.pf')                                  #CHANGE
 
 events = model.load_events(catname)
 #print('Number of events:', len(events))
