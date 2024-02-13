@@ -32,21 +32,7 @@ workdir='/Users/giaco/UNI/PhD_CODE/GIT/FLEGREI_moment_tensor'
 plotdir =  os.path.join(workdir,'PLOTS')
 plotdir =  os.path.join(plotdir,'AMP_DIST')
 
-catdir =  os.path.join(workdir,'CAT')
-meta_datadir=os.path.join(workdir,'META_DATA')
-datadir=os.path.join(workdir,'DATA_response')                                         #CHANGE
-
-#select stations (pyrocko)
-station_name = os.path.join(meta_datadir, 'stations_flegrei_INGV.pf')
-
-st = model.load_stations(station_name)
-#print('Number of stations', len(st))
-
-#select catalogue (pyrocko)
-catname = os.path.join(catdir, 'catologue_flegrei_new_mag2_5.pf')                                  #CHANGE
-
-events = model.load_events(catname)
-#print('Number of events:', len(events))
+datadir=os.path.join(workdir,'DATA_big_eq')                                         #CHANGE
 
 ###################################
 
@@ -55,71 +41,18 @@ for file in os.listdir(datadir):
     #select event
     name = os.fsdecode(file)
 
-    if name.startswith(events[0].name.split('_')[0]): 
-
+    if name.startswith('.'): 
+        continue
+    else:
         ev_dir=os.path.join(datadir,name)
         ev_name=os.path.join(ev_dir,name + '.mseed')
-
-        for ev in events:
-            if ev.name==name:
-                print('Selected event:',name)
-                #print('lat:',ev.lat,' lon:',ev.lon)
-                event=ev
 
         #select wavelet (obspy)  
         w=read(ev_name)
         #print('number of traces in event:',len(w))
+        w.plot(outfile= name + '.pdf' )
 
-        st_coord=[]
-        for trace in w:
-            for s in st:
-                if trace.stats.station==s.station:
-                    st_coord.append( [trace.stats.station, trace.stats.channel , s.lat,s.lon, max( abs(trace.data) ) ] )
-            
-        #print('number of traces:',len(st_coord))
-
-        #calculate distance
-        coords_event = (event.lat, event.lon)
-
-        dist_vs_amp=[]
-
-        for row in st_coord:
-            coords_station = (row[2], row[3])
-            dist= geopy.distance.distance(coords_event, coords_station).km
-
-            dist_vs_amp.append( [row[0], row[1],dist,row[4]] )
-        dist_vs_amp[0]
-
-        # separate 3 channels
-        channel1=[]
-        channel2=[]
-        channel3=[]
-        distance1=[]
-        distance2=[]
-        distance3=[]
-        hhe=[]
-        hhn=[]
-        hhz=[]
-
-        for row in dist_vs_amp:
-            channel=row[1]
-            if channel=='HHE':
-                hhe.append(row[3])
-                distance1.append(row[2])
-                channel1.append(row[0])
-            elif channel=='HHN':
-                hhn.append(row[3])
-                distance2.append(row[2])
-                channel2.append(row[0])
-            elif channel=='HHZ':
-                hhz.append(row[3])
-                distance3.append(row[2])
-                channel3.append(row[0])
-
-        #print(len(distance1),len(hhe),len(channel1))
-        #print(len(distance2),len(hhn),len(channel2))
-        #print(len(distance3),len(hhz),len(channel3))
-
+        '''
         #SAVE FIGURE SWITCH
         save_fig=True
 
@@ -167,6 +100,6 @@ for file in os.listdir(datadir):
 
             plt.savefig(figname_svg)
             print('Figure',figname.split('/')[-1],'saved!')
-
+        '''
 #        plt.show()
         plt.close()
