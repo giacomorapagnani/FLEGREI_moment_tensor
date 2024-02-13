@@ -34,7 +34,7 @@ plotdir =  os.path.join(plotdir,'AMP_DIST')
 
 catdir =  os.path.join(workdir,'CAT')
 meta_datadir=os.path.join(workdir,'META_DATA')
-datadir=os.path.join(workdir,'DATA_response')                                         #CHANGE
+datadir=os.path.join(workdir,'DATA_big_eq')                                         #CHANGE
 
 #select stations (pyrocko)
 station_name = os.path.join(meta_datadir, 'stations_flegrei_INGV.pf')
@@ -43,7 +43,7 @@ st = model.load_stations(station_name)
 #print('Number of stations', len(st))
 
 #select catalogue (pyrocko)
-catname = os.path.join(catdir, 'catologue_flegrei_new_mag2_5.pf')                                  #CHANGE
+catname = os.path.join(catdir, 'cat_eq_turkey.pf')                                  #CHANGE
 
 events = model.load_events(catname)
 #print('Number of events:', len(events))
