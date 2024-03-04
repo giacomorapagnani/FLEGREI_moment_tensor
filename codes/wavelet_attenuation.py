@@ -31,6 +31,7 @@ workdir='/Users/giaco/UNI/PhD_CODE/GIT/FLEGREI_moment_tensor'
 
 plotdir =  os.path.join(workdir,'PLOTS')
 plotdir =  os.path.join(plotdir,'AMP_DIST')
+plotdir =  os.path.join(plotdir,'big_eq')                                       #SWITCH
 
 catdir =  os.path.join(workdir,'CAT')
 meta_datadir=os.path.join(workdir,'META_DATA')
@@ -43,7 +44,7 @@ st = model.load_stations(station_name)
 #print('Number of stations', len(st))
 
 #select catalogue (pyrocko)
-catname = os.path.join(catdir, 'cat_eq_turkey.pf')                                  #CHANGE
+catname = os.path.join(catdir, 'cat_eq_usa.pf')                   #CHANGE
 
 events = model.load_events(catname)
 #print('Number of events:', len(events))
