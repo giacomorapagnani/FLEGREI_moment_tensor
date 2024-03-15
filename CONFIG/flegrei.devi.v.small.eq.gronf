@@ -157,7 +157,7 @@ problem_config: !grond.CMTProblemConfig
     depth: 200 .. 5000
     duration: 0.1 .. 0.1
     east_shift: -2000 .. 2000
-    magnitude: 1.5 .. 4.
+    magnitude: 1. .. 4.
     north_shift: -2000 .. 2000
     rmdd: -1.5708 .. 1.5708
     rmed: -1 .. 1
