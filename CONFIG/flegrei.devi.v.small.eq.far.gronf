@@ -15,7 +15,7 @@ target_groups:
   path: 'td.r'
   weight: 1.0
   interpolation: 'nearest_neighbor'
-  store_id: campiflegrei2
+  store_id: campiflegrei
   distance_min: 0.1e3
   distance_max: 40e3
   channels: [Z]
@@ -35,7 +35,7 @@ target_groups:
   path: 'td.l'
   weight: 1.0
   interpolation: 'nearest_neighbor'
-  store_id: campiflegrei2
+  store_id: campiflegrei
   distance_min: 0.1e3
   distance_max: 40e3
   channels: [T]
@@ -55,7 +55,7 @@ target_groups:
   path: 'fd.r'
   weight: 1.0
   interpolation: 'nearest_neighbor'
-  store_id: campiflegrei2
+  store_id: campiflegrei
   distance_min: 0.1e3
   distance_max: 40e3
   channels: [Z]
@@ -75,7 +75,7 @@ target_groups:
   path: 'fd.l'
   weight: 1.0
   interpolation: 'nearest_neighbor'
-  store_id: campiflegrei2
+  store_id: campiflegrei
   distance_min: 0.1e3
   distance_max: 40e3
   channels: [T]
@@ -95,7 +95,7 @@ target_groups:
   path: 'cc.p'
   weight: 1.0
   interpolation: 'nearest_neighbor'
-  store_id: campiflegrei2
+  store_id: campiflegrei
   distance_min: 0.1e3
   distance_max: 40e3
   channels: [Z]
@@ -115,7 +115,7 @@ target_groups:
   path: 'cc.s'
   weight: 1.0
   interpolation: 'nearest_neighbor'
-  store_id: campiflegrei2
+  store_id: campiflegrei
   distance_min: 0.1e3
   distance_max: 40e3
   channels: [T]
@@ -135,7 +135,7 @@ target_groups:
   path: 'cc.fw'
   weight: 1.0
   interpolation: 'nearest_neighbor'
-  store_id: campiflegrei2
+  store_id: campiflegrei
   distance_min: 0.1e3
   distance_max: 40e3
   channels: [Z,R,T]
@@ -187,7 +187,7 @@ optimiser_config: !grond.HighScoreOptimiserConfig
   nbootstrap: 100
 engine_config: !grond.EngineConfig
   gf_stores_from_pyrocko_config: true
-  gf_store_superdirs: [../GF_STORES]
+  gf_store_superdirs: [../GF_STORES2]
   gf_store_dirs: []
 event_names: []
 event_names_exclude: []
