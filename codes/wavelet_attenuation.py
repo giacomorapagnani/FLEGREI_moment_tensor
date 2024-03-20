@@ -122,7 +122,7 @@ for file in os.listdir(datadir):
         #print(len(distance3),len(hhz),len(channel3))
 
         #SAVE FIGURE SWITCH
-        save_fig=True
+        save_fig=False
 
         # Creazione della figura e dei subplot
         fig, axs = plt.subplots(1, 1, figsize=(17, 11), sharex=False)
@@ -169,5 +169,5 @@ for file in os.listdir(datadir):
             plt.savefig(figname_svg)
             print('Figure',figname.split('/')[-1],'saved!')
 
-#        plt.show()
+        plt.show()
         plt.close()
