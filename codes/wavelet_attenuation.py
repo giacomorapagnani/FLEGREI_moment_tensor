@@ -31,11 +31,11 @@ workdir='/Users/giaco/UNI/PhD_CODE/GIT/FLEGREI_moment_tensor'
 
 plotdir =  os.path.join(workdir,'PLOTS')
 plotdir =  os.path.join(plotdir,'AMP_DIST')
-plotdir =  os.path.join(plotdir,'big_eq')                                       #SWITCH
+#plotdir =  os.path.join(plotdir,'big_eq')                                       #SWITCH
 
 catdir =  os.path.join(workdir,'CAT')
 meta_datadir=os.path.join(workdir,'META_DATA')
-datadir=os.path.join(workdir,'DATA_big_eq')                                         #CHANGE
+datadir=os.path.join(workdir,'DATA_response')                                         #CHANGE
 
 #select stations (pyrocko)
 station_name = os.path.join(meta_datadir, 'stations_flegrei_INGV.pf')
@@ -44,7 +44,7 @@ st = model.load_stations(station_name)
 #print('Number of stations', len(st))
 
 #select catalogue (pyrocko)
-catname = os.path.join(catdir, 'cat_eq_usa.pf')                   #CHANGE
+catname = os.path.join(catdir, 'catologue_flegrei_new_mag2_5.pf')                   #CHANGE
 
 events = model.load_events(catname)
 #print('Number of events:', len(events))
@@ -122,7 +122,7 @@ for file in os.listdir(datadir):
         #print(len(distance3),len(hhz),len(channel3))
 
         #SAVE FIGURE SWITCH
-        save_fig=False
+        save_fig=True
 
         # Creazione della figura e dei subplot
         fig, axs = plt.subplots(1, 1, figsize=(17, 11), sharex=False)
@@ -169,5 +169,5 @@ for file in os.listdir(datadir):
             plt.savefig(figname_svg)
             print('Figure',figname.split('/')[-1],'saved!')
 
-        plt.show()
+        #plt.show()
         plt.close()

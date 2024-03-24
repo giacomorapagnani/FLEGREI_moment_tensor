@@ -76,32 +76,61 @@ stations_xml_name=os.path.join(meta_data_dir,'stations_flegrei_INGV.xml')
 
 inv_f=read_inventory(stations_xml_name)
 #print(inv_f)
-        
+
+#CORRECT VALUES:
+norm_factor_CORRECT=571508000.
+g0_CORRECT=800.
+stage_gain_CORRECT=304878.
+zeros_CORRECT=[0j, 0j]
+poles_CORRECT=[(-0.074016+0.074016j),(-0.074016-0.074016j),(-502.65+0j),(-1005+0j),(-1131+0j)]
+sensitivity_CORRECT=243902000.        
 
 for network in inv_f:
     for station in network:
         for channel in station.channels:
             if channel.sensor.description == 'GURALP CMG-40T-60S' and channel.data_logger.description == 'INGV GILDA':
-                    trans_funct_type=channel.response.response_stages[0]._pz_transfer_function_type     #transfer function type
+                    correction=False
                     t1=util.time_to_str(channel.start_date)                   #start of recording time
                     try:
                         t2=util.time_to_str(channel.end_date)                     #end of recording time
                     except:
-                        t2='None'
-                    norm_factor=channel.response.response_stages[0].normalization_factor     #normalization factor: A0
-                    g0=channel.response.response_stages[0].stage_gain                        #G0
+                        t2='Now'
+                    if norm_factor_CORRECT!=channel.response.response_stages[0].normalization_factor:     #normalization factor: A0
+                        channel.response.response_stages[0].normalization_factor=norm_factor_CORRECT
+                        correction=True
+                    if g0_CORRECT != channel.response.response_stages[0].stage_gain:                        #G0
+                        channel.response.response_stages[0].stage_gain=g0_CORRECT
+                        correction=True
                     try:
                         find_correct_stage=channel.response.response_stages[1].cf_transfer_function_type
                         if find_correct_stage == 'DIGITAL':
-                            stage_gain=channel.response.response_stages[1].stage_gain       #stage gain
+                            if stage_gain_CORRECT!=channel.response.response_stages[1].stage_gain:       #stage gain
+                                channel.response.response_stages[1].stage_gain=stage_gain_CORRECT
+                                correction=True
                         else:
-                            stage_gain='!STAGE GAIN ERROR!'
+                            print('!STAGE GAIN ERROR!')
                     except:
                         find_correct_stage=channel.response.response_stages[2].cf_transfer_function_type
-                        if channel.response.response_stages[2].cf_transfer_function_type == 'DIGITAL':
-                            stage_gain=channel.response.response_stages[2].stage_gain       #stage gain
+                        if find_correct_stage == 'DIGITAL':
+                            if stage_gain_CORRECT!=channel.response.response_stages[2].stage_gain:       #stage gain
+                                channel.response.response_stages[2].stage_gain=stage_gain_CORRECT
+                                correction=True
                         else:
-                            stage_gain='!STAGE GAIN ERROR!'
-                    zeros=channel.response.response_stages[0].zeros                         #zeros
-                    poles=channel.response.response_stages[0].poles                         #poles
-                    sensitivity=channel.response.instrument_sensitivity.value               #sensitivity
+                            print('!STAGE GAIN ERROR!')
+                    if set(zeros_CORRECT)!=set(channel.response.response_stages[0].zeros):                         #zeros
+                        channel.response.response_stages[0].zeros=zeros_CORRECT
+                        correction=True
+                    if set(poles_CORRECT)!=set(channel.response.response_stages[0].poles):                         #poles
+                        channel.response.response_stages[0].poles=poles_CORRECT
+                        correction=True
+                    if sensitivity_CORRECT!=channel.response.instrument_sensitivity.value:               #sensitivity
+                        channel.response.instrument_sensitivity.value=sensitivity_CORRECT
+                        correction=True
+                    
+                    #if correction:
+                    #    print('station',station.code,', channel',channel.code,', in time interval:',t1,'--->',t2,'| CORRECTED!')
+
+save_xml=False
+
+if save_xml:
+    inv_f.write(stations_xml_name,format='STATIONXML')                        #save
